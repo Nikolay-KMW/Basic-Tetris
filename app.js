@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const speedBtn = document.querySelector('#speed-button');
 
     let nextRandom = 0;
+    let nextColor = nextRandom;
     let timerId = null;
     let score = 0;
     let interval = getInterval();
@@ -51,25 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino];
+    const tetrominosColors = ['lTet', 'zTet', 'tTet', 'oTet', 'iTet'];
 
     let currentPosition = 4;
     let currentRotation = 0;
 
     // randomly select a Tetromino and its first rotation
     let random = Math.floor(Math.random() * theTetrominoes.length);
+    let currentColor = random;
     let current = theTetrominoes[random][currentRotation];
 
     // draw the Tetromino
     function draw() {
         current.forEach((index) => {
-            squares[currentPosition + index].classList.add('tetromino');
+            squares[currentPosition + index].classList.add('tetromino', tetrominosColors[currentColor]);
         });
     }
 
     // undraw the Tetromino
     function undraw() {
         current.forEach((index) => {
-            squares[currentPosition + index].classList.remove('tetromino');
+            squares[currentPosition + index].classList.remove('tetromino', tetrominosColors[currentColor]);
         });
     }
 
@@ -114,7 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // start a new tetromino falling
             random = nextRandom;
+            currentColor = nextColor;
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+            nextColor = nextRandom;
             current = theTetrominoes[random][currentRotation];
             currentPosition = 4;
             draw();
@@ -183,10 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayShape() {
         // remove any trace of tetromino from the entire grid
         displaySquares.forEach((squares) => {
-            squares.classList.remove('tetromino');
+            squares.classList.remove('tetromino', tetrominosColors[currentColor]);
         });
         upNextTetrominoes[nextRandom].forEach((index) => {
-            displaySquares[displayIndex + index].classList.add('tetromino');
+            displaySquares[displayIndex + index].classList.add('tetromino', tetrominosColors[nextColor]);
         });
     }
 
@@ -228,6 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             interval = getInterval();
             timerId = setInterval(moveDown, interval);
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+            nextColor = nextRandom;
             displayShape();
         }
     });
@@ -242,8 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 scoreDisplay.innerHTML = score;
 
                 row.forEach((index) => {
-                    squares[index].classList.remove('taken');
-                    squares[index].classList.remove('tetromino');
+                    squares[index].classList.remove('taken', 'tetromino', ...tetrominosColors);
                 });
 
                 const squaresRemoved = squares.splice(i, width);
