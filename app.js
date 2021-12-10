@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid');
     let squares = Array.from(document.querySelectorAll('.grid div'));
 
+    const keyEffect = document.querySelector('#key-effect');
+    const addScoreEffect = document.querySelector('#addScore-effect');
+    const gameOverEffect = document.querySelector('#gameOver-effect');
+
     const scoreDisplay = document.querySelector('#score');
     const startBtn = document.querySelector('#start-button');
     const speedBtn = document.querySelector('#speed-button');
@@ -81,23 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (event.keyCode) {
             case 37:
                 moveLeft();
+                playKeyEffect();
                 break;
 
             case 38:
                 rotate();
+                playKeyEffect();
                 break;
 
             case 39:
                 moveRight();
+                playKeyEffect();
                 break;
 
             case 40:
                 moveDown();
+                playKeyEffect();
                 break;
 
             default:
                 break;
         }
+    }
+
+    function playKeyEffect() {
+        keyEffect.pause();
+        keyEffect.currentTime = 0.0;
+        keyEffect.play();
+    }
+
+    function playAddScoreEffect() {
+        addScoreEffect.play();
+    }
+
+    function playGameOverEffect() {
+        gameOverEffect.play();
     }
 
     document.addEventListener('keyup', control);
@@ -244,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9];
 
             if (row.every((index) => squares[index].classList.contains('taken'))) {
+                playAddScoreEffect();
                 score += 10;
                 scoreDisplay.innerHTML = score;
 
@@ -261,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //game over
     function gameOver() {
         if (current.some((index) => squares[currentPosition + index].classList.contains('taken'))) {
+            playGameOverEffect();
             scoreDisplay.innerHTML = 'end';
             clearInterval(timerId);
         }
