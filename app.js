@@ -4,10 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const scoreDisplay = document.querySelector('#score');
     const startBtn = document.querySelector('#start-button');
+    const speedBtn = document.querySelector('#speed-button');
 
     let nextRandom = 0;
     let timerId = null;
     let score = 0;
+    let interval = getInterval();
 
     const width = 10;
 
@@ -188,6 +190,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getInterval() {
+        if (speedBtn) {
+            let value = speedBtn.value;
+            let minValue = speedBtn.min;
+            let maxValue = speedBtn.max;
+
+            let interval = Math.floor(maxValue - value);
+
+            if (interval < minValue) {
+                return minValue;
+            }
+            return interval;
+        } else {
+            return 500;
+        }
+    }
+
+    speedBtn?.addEventListener('change', () => {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+
+            draw();
+            interval = getInterval();
+            timerId = setInterval(moveDown, interval);
+        }
+    });
+
     // add functionality to the button
     startBtn?.addEventListener('click', () => {
         if (timerId) {
@@ -195,7 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
             timerId = null;
         } else {
             draw();
-            timerId = setInterval(moveDown, 500);
+            interval = getInterval();
+            timerId = setInterval(moveDown, interval);
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
             displayShape();
         }

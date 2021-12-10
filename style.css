@@ -36,3 +36,12 @@
     width: 20px;
     height: 20px;
 }
+
+.speed {
+    margin-top: 15px;
+    height: 20px;
+}
+
+.speed #speed-button {
+    height: 8px;
+}
